@@ -5,8 +5,17 @@ import kotlinx.coroutines.launch
 
 fun main() {
     var activityOne = Activity_One()
-    val reqeust = Reqeust()
-    reqeust.onRequest()
+
+    GlobalScope.launch {
+        val reqeust2 = Reqeust3()
+        reqeust2.onRequest()
+    }
+
+    GlobalScope.launch {
+        val reqeust = Reqeust()
+        reqeust.onRequest()
+    }
+
     Thread.sleep(10000)
 }
 
@@ -17,7 +26,11 @@ class Activity_One {
 
     @Abnormal
     fun onError(message: Message) {
-        println("Activity_One-Abnormal"+message.name)
+        when(message.name){
+            "Reqeust"-> println("Reqeust :Activity_One-Abnormal"+message.name)
+            "Test"->println("Test :Activity_One-Abnormal"+message.name)
+        }
+
         GlobalScope.launch {
             message.onAbnormalListener!!.onLaunch()
             message.onAbnormalListener!!.onCancel()
@@ -34,6 +47,22 @@ class Reqeust {
 
             },{
                 println("-----Reqeust-success---")
+                ff
+            })
+
+        }
+    }
+}
+
+class Reqeust3 {
+    fun onRequest() {
+        val ff:Ff?=null
+        GlobalScope.launch {
+            abnormalNull("Test",{
+                println("-----test-error----")
+
+            },{
+                println("-----test-success---")
                 ff
             })
 
