@@ -1,6 +1,9 @@
 package com.abnormal
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class Abnormals {
     companion object {
@@ -11,13 +14,13 @@ class Abnormals {
         }
     }
 
-    fun <T> sendAbnormalMessage(name: String, nul: () -> Unit = {}, block: () -> T) {
+    suspend fun <T> abnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
         val onAbnormalListener = object : OnAbnormalListener {
-            override fun onLaunch() {
+            override suspend fun onLaunch() {
                 block()
             }
 
-            override fun onCancel() {
+            override suspend fun onCancel() {
                 nul()
             }
         }
@@ -31,7 +34,7 @@ class Abnormals {
         queue.removeMessages(message)
     }
 
-    private fun sendAbnormalMessage(name: String, onAbnormalListener: OnAbnormalListener) {
+    fun sendAbnormalMessage(name: String, onAbnormalListener: OnAbnormalListener) {
         val message = Message()
         message.name = name
         message.onAbnormalListener = onAbnormalListener
@@ -45,10 +48,33 @@ class Abnormals {
 
 }
 
-fun <T> sendAbnormalMessage(name: String, nul: () -> Unit = {}, block: () -> T) {
-    Abnormals().sendAbnormalMessage(name, nul, block)
+suspend fun <T> abnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
+    Abnormals().abnormalMessage(name, nul, block)
 }
 
-fun <T : Any> initAbnormalPrepare(context: T) {
+fun <T : Any> initPrepare(context: T) {
     Abnormals.prepare(context)
 }
+
+suspend fun <T> abnormalNull(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
+    var boolean: Boolean = true
+    var count: Int = 0
+    while (boolean) {
+        block().checkNull({
+            if (count == 10) {
+                abnormalMessage(name, nul, block)
+                return
+            }
+            count++
+            println("Then Abnormals BuildRetry is Count = : " + count)
+        }, {
+            boolean = false
+        })
+    }
+}
+
+inline fun <T> T?.checkNull(nul: () -> Unit = {}, noNull: T.() -> Unit) {
+    if (this == null) nul()
+    else noNull()
+}
+
