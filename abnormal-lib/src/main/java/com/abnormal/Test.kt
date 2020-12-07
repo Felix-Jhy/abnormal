@@ -26,26 +26,22 @@ class Activity_One {
 
     @Abnormal
     fun onError(message: Message) {
-        when(message.name){
-            "Reqeust"-> println("Reqeust :Activity_One-Abnormal"+message.name)
-            "Test"->println("Test :Activity_One-Abnormal"+message.name)
+        when (message.name) {
+            "Reqeust" -> println("Reqeust :Activity_One-Abnormal" + message.name)
+            "Test" -> println("Test :Activity_One-Abnormal" + message.name)
         }
-
-        GlobalScope.launch {
-            message.onAbnormalListener!!.onLaunch()
-            message.onAbnormalListener!!.onCancel()
-        }
+        message.onAbnormalListener!!.onLaunch()
+        message.onAbnormalListener!!.onCancel()
     }
 }
 
 class Reqeust {
     fun onRequest() {
-      val ff:Ff?=null
+        val ff: Ff? = null
         GlobalScope.launch {
-            abnormalNull("Reqeust",{
+            abnormalNull("Reqeust", {
                 println("-----Reqeust-error----")
-
-            },{
+            }, {
                 println("-----Reqeust-success---")
                 ff
             })
@@ -56,12 +52,11 @@ class Reqeust {
 
 class Reqeust3 {
     fun onRequest() {
-        val ff:Ff?=null
+        val ff: Ff? = null
         GlobalScope.launch {
-            abnormalNull("Test",{
+            abnormalNull("Test", {
                 println("-----test-error----")
-
-            },{
+            }, {
                 println("-----test-success---")
                 ff
             })
@@ -70,5 +65,5 @@ class Reqeust3 {
     }
 }
 
-class Ff{}
+class Ff {}
 

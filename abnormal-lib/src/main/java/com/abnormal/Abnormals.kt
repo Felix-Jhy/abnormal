@@ -16,12 +16,16 @@ class Abnormals {
 
     suspend fun <T> abnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
         val onAbnormalListener = object : OnAbnormalListener {
-            override suspend fun onLaunch() {
-                block()
+            override fun onLaunch() {
+                GlobalScope.launch {
+                    block()
+                }
             }
 
-            override suspend fun onCancel() {
-                nul()
+            override fun onCancel() {
+                GlobalScope.launch {
+                    nul()
+                }
             }
         }
         sendAbnormalMessage(name, onAbnormalListener)
