@@ -3,14 +3,22 @@ package com.abnormal
 import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class Abnormals {
     companion object {
         lateinit var messageQueue: MessageQueue
+        var maxCount: Int = -1
         fun prepare(context: Any) {
-            messageQueue = MessageQueue()
-            messageQueue.prepare(context)
+            this.messageQueue = MessageQueue()
+            this.messageQueue.prepare(context)
+        }
+
+        fun prepare(context: Any, maxCount: Int) {
+            this.messageQueue = MessageQueue()
+            this.messageQueue.prepare(context)
+            this.maxCount = maxCount
         }
     }
 
@@ -65,7 +73,7 @@ suspend fun <T> abnormalNull(name: String, nul: suspend () -> Unit = {}, block: 
     var count: Int = 0
     while (boolean) {
         block().checkNull({
-            if (count == 10) {
+            if (count==Abnormals.maxCount){
                 abnormalMessage(name, nul, block)
                 return
             }
@@ -74,6 +82,7 @@ suspend fun <T> abnormalNull(name: String, nul: suspend () -> Unit = {}, block: 
         }, {
             boolean = false
         })
+        delay(1000)
     }
 }
 
