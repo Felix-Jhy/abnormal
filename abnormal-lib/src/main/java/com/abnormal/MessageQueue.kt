@@ -34,12 +34,12 @@ class MessageQueue {
                         when (queue.peek()!!.onAbnormalListener!!.onLaunch()) {
                             true -> {
                                 queue.peek()!!.execute = Execute.ERROR
-                                println("MessageQueue : ergodic : true name: " + queue.peek()!!.name)
+                                println("MessageQueue : ergodic : true name : " + queue.peek()!!.name + " queue-size : " + queue.size)
                                 it.execute(context, queue.peek()!!)
                             }
                             false -> {
                                 queue.peek()!!.execute = if (queue.size == 1) Execute.SUCCESS else Execute.ERROR
-                                println("MessageQueue : ergodic : false name: " + queue.peek()!!.name)
+                                println("MessageQueue : ergodic : false name: " + queue.peek()!!.name + " queue-size : " + queue.size)
                                 it.execute(context, queue.poll()!!)
                             }
                         }

@@ -29,7 +29,7 @@ fun main() {
 
 class Activity_One {
     init {
-        Abnormals.prepare(this, 1)
+       initPrepare(this, 2)
     }
 
     @Abnormal
