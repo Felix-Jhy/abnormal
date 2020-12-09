@@ -1,6 +1,6 @@
 package com.abnormal
 
 public interface OnAbnormalListener {
-     fun onLaunch()
-     fun onCancel()
+    suspend fun onLaunch(): Boolean
+    suspend fun onCancel()
 }

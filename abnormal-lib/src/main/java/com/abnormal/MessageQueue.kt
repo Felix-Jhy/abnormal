@@ -10,6 +10,7 @@ class MessageQueue {
 
     private val queue: ConcurrentLinkedQueue<Message> = ConcurrentLinkedQueue()
     private lateinit var context: Any
+
     fun prepare(context: Any) {
         this.context = context
         ergodic()
@@ -30,7 +31,19 @@ class MessageQueue {
             while (true) {
                 if (!queue.isEmpty()) {
                     ExecuteAbnormal().also {
-                        it.execute(context, queue.poll()!!)
+                        when (queue.peek()!!.onAbnormalListener!!.onLaunch()) {
+                            true -> {
+                                queue.peek()!!.execute = Execute.ERROR
+                                println("MessageQueue : ergodic : true name: " + queue.peek()!!.name)
+                                it.execute(context, queue.peek()!!)
+                            }
+                            false -> {
+                                queue.peek()!!.execute = Execute.SUCCESS
+                                println("MessageQueue : ergodic : false name: " + queue.peek()!!.name)
+                                it.execute(context, queue.poll()!!)
+                            }
+                        }
+
                         delay(1000)
                     }
                 }

@@ -24,16 +24,18 @@ class Abnormals {
 
     suspend fun <T> abnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
         val onAbnormalListener = object : OnAbnormalListener {
-            override fun onLaunch() {
-                GlobalScope.launch {
-                    block()
-                }
+            override suspend fun onLaunch(): Boolean {
+                var boolean = true
+                block().checkNull({
+                    boolean = true
+                }, {
+                    boolean = false
+                })
+                return boolean
             }
 
-            override fun onCancel() {
-                GlobalScope.launch {
-                    nul()
-                }
+            override suspend fun onCancel() {
+                nul()
             }
         }
         sendAbnormalMessage(name, onAbnormalListener)
@@ -73,7 +75,7 @@ suspend fun <T> abnormalNull(name: String, nul: suspend () -> Unit = {}, block: 
     var count: Int = 0
     while (boolean) {
         block().checkNull({
-            if (count==Abnormals.maxCount){
+            if (count == Abnormals.maxCount) {
                 abnormalMessage(name, nul, block)
                 return
             }
