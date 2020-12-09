@@ -70,6 +70,10 @@ fun <T : Any> initPrepare(context: T) {
     Abnormals.prepare(context)
 }
 
+fun <T : Any> initPrepare(context: T,maxCount: Int) {
+    Abnormals.prepare(context,maxCount)
+}
+
 suspend fun <T> abnormalNull(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
     var boolean: Boolean = true
     var count: Int = 0
