@@ -38,7 +38,7 @@ class MessageQueue {
                                 it.execute(context, queue.peek()!!)
                             }
                             false -> {
-                                queue.peek()!!.execute = Execute.SUCCESS
+                                queue.peek()!!.execute = if (queue.size == 1) Execute.SUCCESS else Execute.ERROR
                                 println("MessageQueue : ergodic : false name: " + queue.peek()!!.name)
                                 it.execute(context, queue.poll()!!)
                             }
