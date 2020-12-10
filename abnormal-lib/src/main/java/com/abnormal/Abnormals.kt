@@ -41,6 +41,21 @@ class Abnormals {
         sendAbnormalMessage(name, onAbnormalListener)
     }
 
+    suspend fun <T:Boolean> isAbnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
+        val onAbnormalListener = object : OnAbnormalListener {
+            override suspend fun onLaunch(): Boolean {
+                var boolean = true
+                boolean = !block()
+                return boolean
+            }
+
+            override suspend fun onCancel() {
+                nul()
+            }
+        }
+        sendAbnormalMessage(name, onAbnormalListener)
+    }
+
     fun removeAbnormalMessage(name: String) {
         val queue = messageQueue
         val message = Message()
@@ -92,8 +107,13 @@ suspend fun <T> abnormalNull(name: String, nul: suspend () -> Unit = {}, block: 
     }
 }
 
+suspend fun <T:Boolean> isAbnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
+    Abnormals().isAbnormalMessage(name,nul,block)
+}
+
 inline fun <T> T?.checkNull(nul: () -> Unit = {}, noNull: T.() -> Unit) {
     if (this == null) nul()
     else noNull()
 }
+
 
