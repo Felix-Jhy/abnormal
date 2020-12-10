@@ -41,7 +41,7 @@ class Abnormals {
         sendAbnormalMessage(name, onAbnormalListener)
     }
 
-    suspend fun <T:Boolean> isAbnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
+    suspend fun <T : Boolean> isAbnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
         val onAbnormalListener = object : OnAbnormalListener {
             override suspend fun onLaunch(): Boolean {
                 var boolean = true
@@ -81,12 +81,16 @@ suspend fun <T> abnormalMessage(name: String, nul: suspend () -> Unit = {}, bloc
     Abnormals().abnormalMessage(name, nul, block)
 }
 
+suspend fun <T : Boolean> isAbnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
+    Abnormals().isAbnormalMessage(name, nul, block)
+}
+
 fun <T : Any> initPrepare(context: T) {
     Abnormals.prepare(context)
 }
 
-fun <T : Any> initPrepare(context: T,maxCount: Int) {
-    Abnormals.prepare(context,maxCount)
+fun <T : Any> initPrepare(context: T, maxCount: Int) {
+    Abnormals.prepare(context, maxCount)
 }
 
 suspend fun <T> abnormalNull(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
@@ -107,8 +111,22 @@ suspend fun <T> abnormalNull(name: String, nul: suspend () -> Unit = {}, block: 
     }
 }
 
-suspend fun <T:Boolean> isAbnormalMessage(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
-    Abnormals().isAbnormalMessage(name,nul,block)
+suspend fun <T : Boolean> isAbnormalNull(name: String, nul: suspend () -> Unit = {}, block: suspend () -> T) {
+    var boolean: Boolean = true
+    var count: Int = 0
+    while (boolean) {
+        if (block() == true) {
+            boolean = false
+        } else {
+            if (count == Abnormals.maxCount) {
+                isAbnormalMessage(name, nul, block)
+                return
+            }
+            count++
+            println("Then Abnormals BuildRetry is Count = : " + count)
+        }
+        delay(1000)
+    }
 }
 
 inline fun <T> T?.checkNull(nul: () -> Unit = {}, noNull: T.() -> Unit) {

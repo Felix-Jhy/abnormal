@@ -19,7 +19,7 @@ fun main() {
 
 class Activity_One1 {
     init {
-       initPrepare(this, 2)
+       initPrepare(this, 5)
     }
 
     @Abnormal
@@ -36,7 +36,7 @@ class Reqeust12 {
         var ff: Ff? = null
         GlobalScope.launch {
             var i: Int = 0
-            isAbnormalMessage("Reqeust", {
+            isAbnormalNull("Reqeust", {
                println("Reqeust-eeror")
             }, {
                 if (i >= 10) {
