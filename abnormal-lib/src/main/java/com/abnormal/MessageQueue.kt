@@ -43,7 +43,7 @@ class MessageQueue {
                                 it.execute(context, queue.poll()!!)
                             }
                         }
-                        delay(1000)
+                        delay(10*1000)
                     }
                 }
             }
